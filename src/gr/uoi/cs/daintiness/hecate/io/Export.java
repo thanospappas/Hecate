@@ -4,8 +4,10 @@ import gr.uoi.cs.daintiness.hecate.diff.DiffResult;
 import gr.uoi.cs.daintiness.hecate.metrics.tables.Changes;
 import gr.uoi.cs.daintiness.hecate.metrics.tables.MetricsOverVersion;
 import gr.uoi.cs.daintiness.hecate.metrics.tables.TablesInfo;
+import gr.uoi.cs.daintiness.hecate.sql.Attribute;
 import gr.uoi.cs.daintiness.hecate.transitions.Deletion;
 import gr.uoi.cs.daintiness.hecate.transitions.Insersion;
+import gr.uoi.cs.daintiness.hecate.transitions.Transition;
 import gr.uoi.cs.daintiness.hecate.transitions.TransitionList;
 import gr.uoi.cs.daintiness.hecate.transitions.Transitions;
 import gr.uoi.cs.daintiness.hecate.transitions.Update;
@@ -15,13 +17,15 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import javax.swing.JOptionPane;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 
 public class Export {
-
+	private static BufferedWriter trsFile;
 	public static void xml(Transitions trs, String path) {
 		try {
 			JAXBContext jaxbContext = JAXBContext.newInstance(Update.class,
@@ -35,7 +39,101 @@ public class Export {
 			e.printStackTrace();
 		}
 	}
+	
+	public static void  initCsvOutput(String path){
+		String slashedPath = Export.getDir(path) + File.separator;
+		String transition = slashedPath + "transitions.csv";
+		try {
+			trsFile = new BufferedWriter(new FileWriter(transition));
+			trsFile.write("trID;oldVer;newVer;Table;EventType;Details\n");
+			trsFile.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 
+
+
+	}
+	public  static void csv(DiffResult res, String path){
+		String filePath = getDir(path) + File.separator + "transitions.csv";
+		try {
+			FileWriter fw = new FileWriter(filePath, true);
+			trsFile = new BufferedWriter(fw);
+			TransitionList list = res.getTransitionList();
+			
+			ArrayList<Transition> trans = list.getTransition();
+			for(Transition transition:trans){
+				String tableName = transition.getAffTable().getName();
+				System.out.println(res.met.getNumRevisions() + ";");
+				Collection<Attribute> afattr = transition.getAffAttributes();
+				for(Attribute attr: afattr){
+					if(attr.getTable().getName().equals(tableName)){
+						trsFile.write(res.met.getNumRevisions() + ";");
+						trsFile.write(list.getNewVersion() + ";");
+						trsFile.write(list.getOldVersion() + ";");
+						trsFile.write(tableName + ";");
+						if(transition instanceof Insersion)
+							trsFile.write("AttrInsertion;");
+						else if(transition instanceof Deletion)
+							trsFile.write("AttrDeletion;");
+						else if(transition instanceof Update)
+							trsFile.write("AttrUpdate;");
+						trsFile.write("attr name is " + attr.getName() + ";");
+						trsFile.write("type is " + attr.getType() + ";");
+						trsFile.write("mode is " + attr.getMode() + ";");
+						trsFile.write("\n");
+					}
+				}
+			}
+			trsFile.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+	}
+	
+	/*public static void csv(Transitions trs, String path) throws IOException{
+		String filePath = getDir(path) + File.separator + "transitions.csv";
+		FileWriter fw = new FileWriter(filePath, true);
+		BufferedWriter transitions = new BufferedWriter(fw);
+		Collection<TransitionList> list = trs.getList();
+		transitions.write("trID;oldVer;newVer;Table;EventType;Details\n");
+		for(TransitionList tr:list){
+			
+			ArrayList<Transition> trans = tr.getTransition();
+			for(Transition transition:trans){
+				String tableName = transition.getAffTable().getName();
+				
+				Collection<Attribute> afattr = transition.getAffAttributes();
+				for(Attribute attr: afattr){
+					if(attr.getTable().getName().equals(tableName)){
+						transitions.write(tr.getNewVersion() + ";");
+						transitions.write(tr.getOldVersion() + ";");
+						transitions.write(tableName + ";");
+						if(transition instanceof Insersion)
+							transitions.write("AttrInsertion;");
+						else if(transition instanceof Deletion)
+							transitions.write("AttrDeletion;");
+						else if(transition instanceof Update)
+							transitions.write("AttrUpdate;");
+						transitions.write("attr name is " + attr.getName() + ";");
+						transitions.write("type is " + attr.getType() + ";");
+						transitions.write("mode is " + attr.getMode() + ";");
+						transitions.write("\n");
+					}
+				}
+				
+			}
+			
+		}
+		transitions.close();
+		
+	}*/
+	
 	public static void metrics(DiffResult res, String path)
 			throws IOException {
 		String filePath = getDir(path) + File.separator + "metrics.csv";
