@@ -45,6 +45,7 @@ public class DiffWorker extends SwingWorker<DiffResult, Integer> {
 
 	@Override
 	protected DiffResult doInBackground() throws Exception {
+		
 		pm = new ProgressMonitor(mp.getRootPane(), "Working...", null, 0, 100);
 		DiffResult res = new DiffResult();
 		if (oldFile != null && newFile != null) {
@@ -64,7 +65,7 @@ public class DiffWorker extends SwingWorker<DiffResult, Integer> {
 			pm.setMaximum(list.length);
 			String path = folder.getAbsolutePath();
 			java.util.Arrays.sort(list);
-			
+			Export.initCsvOutput(path);
 			Export.initMetrics(path);
 			for (int i = 0; i < list.length-1; i++) {
 				pm.setNote("Parsing " + list[i]);
@@ -87,6 +88,7 @@ public class DiffWorker extends SwingWorker<DiffResult, Integer> {
 				res = Delta.minus(schema, schema2);
 				trs.add(res.tl);
 				Export.metrics(res, path);
+				Export.csv(res,path);
 				pm.setProgress(i+1);
 			}
 			try {
@@ -96,6 +98,7 @@ public class DiffWorker extends SwingWorker<DiffResult, Integer> {
 				e.printStackTrace();
 			}
 			Export.xml(trs, path);
+			//Export.csv(trs,path);
 			oldSchema = HecateParser.parse(path + File.separator + list[0]);
 			newSchema = HecateParser.parse(path + File.separator + list[list.length-1]);
 			res = Delta.minus(oldSchema, newSchema);
