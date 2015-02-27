@@ -27,7 +27,7 @@ public class Transitions {
 		this.list.add(in);
 	}
 	
-	Collection<TransitionList> getList() {
+	public Collection<TransitionList> getList() {
 		return list;
 	}
 }
