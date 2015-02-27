@@ -54,4 +54,8 @@ public class TransitionList {
 		this.oldVersion = oldVersion;
 		this.newVersion = newVersion;
 	}
+	
+	public ArrayList<Transition> getTransition(){
+		return list;		
+	}
 }
