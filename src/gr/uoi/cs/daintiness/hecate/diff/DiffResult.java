@@ -34,4 +34,12 @@ public class DiffResult {
 		this.tInfo.clear();
 		met.resetRevisions();
 	}
+	
+	public TransitionList getTransitionList(){
+		return tl;
+	}
+	
+	public TablesInfo getTableInfo(){
+		return tInfo;
+	}
 }
