@@ -48,7 +48,6 @@ public class Export {
 			trsFile.write("trID;oldVer;newVer;Table;EventType;Details\n");
 			trsFile.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -71,25 +70,37 @@ public class Export {
 				for(Attribute attr: afattr){
 					if(attr.getTable().getName().equals(tableName)){
 						trsFile.write(res.met.getNumRevisions() + ";");
-						trsFile.write(list.getNewVersion() + ";");
 						trsFile.write(list.getOldVersion() + ";");
+						trsFile.write(list.getNewVersion() + ";");
 						trsFile.write(tableName + ";");
-						//if(transition instanceof Insersion)
-							//trsFile.write("AttrInsertion;");
-						//else if(transition instanceof Deletion)
-						//	trsFile.write("AttrDeletion;");
-						//else if(transition instanceof Update)
+						if(transition instanceof Insersion)
+							trsFile.write("Insertion: ");
+						else if(transition instanceof Deletion)
+							trsFile.write("Deletion: ");
+						else if(transition instanceof Update)
+							trsFile.write("Update: ");
 						trsFile.write(transition.getType() + ";");
 						trsFile.write("attr name is " + attr.getName() + ";");
 						trsFile.write("type is " + attr.getType() + ";");
 						trsFile.write("mode is " + attr.getMode() + ";");
+
+						if(transition instanceof Insersion)
+							trsFile.write("Insertion:");
+						else if(transition instanceof Deletion)
+							trsFile.write("Deletion:");
+						else if(transition instanceof Update)
+							trsFile.write("Update:");
+						trsFile.write(transition.getType() + ";");
+						trsFile.write("attr: " + attr.getName() + ", ");
+						trsFile.write("type: " + attr.getType() + ", ");
+						trsFile.write("iskey: " + attr.isKey() + ";");
+
 						trsFile.write("\n");
 					}
 				}
 			}
 			trsFile.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
