@@ -53,6 +53,9 @@ public abstract class Transition {
 		return affectedTable;
 	}
 	
+	public String getType(){
+		return this.type;
+	}
 	public int getNumOfAffAttributes() {
 		return affectedAtributes.size();
 	}
