@@ -74,12 +74,12 @@ public class Export {
 						trsFile.write(list.getNewVersion() + ";");
 						trsFile.write(list.getOldVersion() + ";");
 						trsFile.write(tableName + ";");
-						if(transition instanceof Insersion)
-							trsFile.write("AttrInsertion;");
-						else if(transition instanceof Deletion)
-							trsFile.write("AttrDeletion;");
-						else if(transition instanceof Update)
-							trsFile.write("AttrUpdate;");
+						//if(transition instanceof Insersion)
+							//trsFile.write("AttrInsertion;");
+						//else if(transition instanceof Deletion)
+						//	trsFile.write("AttrDeletion;");
+						//else if(transition instanceof Update)
+						trsFile.write(transition.getType() + ";");
 						trsFile.write("attr name is " + attr.getName() + ";");
 						trsFile.write("type is " + attr.getType() + ";");
 						trsFile.write("mode is " + attr.getMode() + ";");
