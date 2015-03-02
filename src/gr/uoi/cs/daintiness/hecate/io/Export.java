@@ -45,7 +45,7 @@ public class Export {
 		String transition = slashedPath + "transitions.csv";
 		try {
 			trsFile = new BufferedWriter(new FileWriter(transition));
-			trsFile.write("trID;oldVer;newVer;Table;EventType;Details\n");
+			trsFile.write("trID;oldVer;newVer;Table;EventType;attrName;attrType;iskey;pkey;fkey;\n");
 			trsFile.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -61,29 +61,40 @@ public class Export {
 			FileWriter fw = new FileWriter(filePath, true);
 			trsFile = new BufferedWriter(fw);
 			TransitionList list = res.getTransitionList();
-			
+			if(list.getTransition().isEmpty()){
+				trsFile.write(res.met.getNumRevisions() + ";");
+				trsFile.write(list.getOldVersion() + ";");
+				trsFile.write(list.getNewVersion() + ";");
+				trsFile.write("-;");
+				trsFile.write("-;");
+				trsFile.write("-;");
+				trsFile.write("-;");
+				trsFile.write("-;");
+				trsFile.write("-;");
+				trsFile.write("-;\n");
+				
+				
+			}
 			ArrayList<Transition> trans = list.getTransition();
 			for(Transition transition:trans){
 				String tableName = transition.getAffTable().getName();
-				System.out.println(res.met.getNumRevisions() + ";");
+				//System.out.println(res.met.getNumRevisions() + ";");
 				Collection<Attribute> afattr = transition.getAffAttributes();
+				trsFile.write(res.met.getNumRevisions() + ";");
+				trsFile.write(list.getOldVersion() + ";");
+				trsFile.write(list.getNewVersion() + ";");
+				boolean firstTime = true;
 				for(Attribute attr: afattr){
-					if(attr.getTable().getName().equals(tableName)){
-						trsFile.write(res.met.getNumRevisions() + ";");
-						trsFile.write(list.getOldVersion() + ";");
-						trsFile.write(list.getNewVersion() + ";");
+				//	if(attr.getTable().getName().equals(tableName)){
+						if(firstTime){
+							firstTime = false;
+						}
+						else{
+							trsFile.write(res.met.getNumRevisions() + ";");
+							trsFile.write(list.getOldVersion() + ";");
+							trsFile.write(list.getNewVersion() + ";");
+						}
 						trsFile.write(tableName + ";");
-						if(transition instanceof Insersion)
-							trsFile.write("Insertion: ");
-						else if(transition instanceof Deletion)
-							trsFile.write("Deletion: ");
-						else if(transition instanceof Update)
-							trsFile.write("Update: ");
-						trsFile.write(transition.getType() + ";");
-						trsFile.write("attr name is " + attr.getName() + ";");
-						trsFile.write("type is " + attr.getType() + ";");
-						trsFile.write("mode is " + attr.getMode() + ";");
-
 						if(transition instanceof Insersion)
 							trsFile.write("Insertion:");
 						else if(transition instanceof Deletion)
@@ -91,12 +102,13 @@ public class Export {
 						else if(transition instanceof Update)
 							trsFile.write("Update:");
 						trsFile.write(transition.getType() + ";");
-						trsFile.write("attr: " + attr.getName() + ", ");
-						trsFile.write("type: " + attr.getType() + ", ");
-						trsFile.write("iskey: " + attr.isKey() + ";");
-
+						trsFile.write(attr.getName() + ";");
+						trsFile.write(attr.getType() + ";");
+						trsFile.write(attr.isKey() + ";");
+						trsFile.write(transition.getAffTable().getpKey().getMode() + ";");
+						trsFile.write(transition.getAffTable().getfKey().getRef(attr) + ";");
 						trsFile.write("\n");
-					}
+					//}
 				}
 			}
 			trsFile.close();
