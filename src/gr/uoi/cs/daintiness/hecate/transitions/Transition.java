@@ -44,9 +44,7 @@ public abstract class Transition {
 		this.affectedAtributes.add(newAttribute);
 	}
 	
-	public String getType(){
-		return this.type;
-	}
+
 	public void table(Table newTable) {
 		this.affectedTable = newTable;
 		this.affectedAtributes = newTable.getAttrs().values();
