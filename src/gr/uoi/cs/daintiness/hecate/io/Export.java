@@ -50,11 +50,8 @@ public class Export {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-
-
-
 	}
+	
 	public  static void csv(DiffResult res, String path){
 		String filePath = getDir(path) + File.separator + "transitions.csv";
 		try {
@@ -65,50 +62,40 @@ public class Export {
 				trsFile.write(res.met.getNumRevisions() + ";");
 				trsFile.write(list.getOldVersion() + ";");
 				trsFile.write(list.getNewVersion() + ";");
-				trsFile.write("-;");
-				trsFile.write("-;");
-				trsFile.write("-;");
-				trsFile.write("-;");
-				trsFile.write("-;");
-				trsFile.write("-;");
-				trsFile.write("-;\n");
-				
-				
+				trsFile.write("-;-;-;-;-;-;-;\n");	
 			}
+			
 			ArrayList<Transition> trans = list.getTransition();
 			for(Transition transition:trans){
 				String tableName = transition.getAffTable().getName();
-				//System.out.println(res.met.getNumRevisions() + ";");
 				Collection<Attribute> afattr = transition.getAffAttributes();
 				trsFile.write(res.met.getNumRevisions() + ";");
 				trsFile.write(list.getOldVersion() + ";");
 				trsFile.write(list.getNewVersion() + ";");
 				boolean firstTime = true;
 				for(Attribute attr: afattr){
-				//	if(attr.getTable().getName().equals(tableName)){
-						if(firstTime){
-							firstTime = false;
-						}
-						else{
-							trsFile.write(res.met.getNumRevisions() + ";");
-							trsFile.write(list.getOldVersion() + ";");
-							trsFile.write(list.getNewVersion() + ";");
-						}
-						trsFile.write(tableName + ";");
-						if(transition instanceof Insersion)
-							trsFile.write("Insertion:");
-						else if(transition instanceof Deletion)
-							trsFile.write("Deletion:");
-						else if(transition instanceof Update)
-							trsFile.write("Update:");
-						trsFile.write(transition.getType() + ";");
-						trsFile.write(attr.getName() + ";");
-						trsFile.write(attr.getType() + ";");
-						trsFile.write(attr.isKey() + ";");
-						trsFile.write(transition.getAffTable().getpKey().getMode() + ";");
-						trsFile.write(transition.getAffTable().getfKey().getRef(attr) + ";");
-						trsFile.write("\n");
-					//}
+					if(firstTime){
+						firstTime = false;
+					}
+					else{
+						trsFile.write(res.met.getNumRevisions() + ";");
+						trsFile.write(list.getOldVersion() + ";");
+						trsFile.write(list.getNewVersion() + ";");
+					}
+					trsFile.write(tableName + ";");
+					if(transition instanceof Insersion)
+						trsFile.write("Insertion:");
+					else if(transition instanceof Deletion)
+						trsFile.write("Deletion:");
+					else if(transition instanceof Update)
+						trsFile.write("Update:");
+					trsFile.write(transition.getType() + ";");
+					trsFile.write(attr.getName() + ";");
+					trsFile.write(attr.getType() + ";");
+					trsFile.write(attr.isKey() + ";");
+					trsFile.write(transition.getAffTable().getpKey().getMode() + ";");
+					trsFile.write(transition.getAffTable().getfKey().getRef(attr) + ";");
+					trsFile.write("\n");
 				}
 			}
 			trsFile.close();
@@ -118,44 +105,7 @@ public class Export {
 		
 		
 	}
-	
-	/*public static void csv(Transitions trs, String path) throws IOException{
-		String filePath = getDir(path) + File.separator + "transitions.csv";
-		FileWriter fw = new FileWriter(filePath, true);
-		BufferedWriter transitions = new BufferedWriter(fw);
-		Collection<TransitionList> list = trs.getList();
-		transitions.write("trID;oldVer;newVer;Table;EventType;Details\n");
-		for(TransitionList tr:list){
-			
-			ArrayList<Transition> trans = tr.getTransition();
-			for(Transition transition:trans){
-				String tableName = transition.getAffTable().getName();
-				
-				Collection<Attribute> afattr = transition.getAffAttributes();
-				for(Attribute attr: afattr){
-					if(attr.getTable().getName().equals(tableName)){
-						transitions.write(tr.getNewVersion() + ";");
-						transitions.write(tr.getOldVersion() + ";");
-						transitions.write(tableName + ";");
-						if(transition instanceof Insersion)
-							transitions.write("AttrInsertion;");
-						else if(transition instanceof Deletion)
-							transitions.write("AttrDeletion;");
-						else if(transition instanceof Update)
-							transitions.write("AttrUpdate;");
-						transitions.write("attr name is " + attr.getName() + ";");
-						transitions.write("type is " + attr.getType() + ";");
-						transitions.write("mode is " + attr.getMode() + ";");
-						transitions.write("\n");
-					}
-				}
-				
-			}
-			
-		}
-		transitions.close();
-		
-	}*/
+
 	
 	public static void metrics(DiffResult res, String path)
 			throws IOException {
