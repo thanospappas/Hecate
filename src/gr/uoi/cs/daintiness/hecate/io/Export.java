@@ -94,8 +94,16 @@ public class Export {
 					trsFile.write(attr.getType() + ";");
 					trsFile.write(attr.isKey() + ";");
 					trsFile.write(transition.getAffTable().getpKey().getMode() + ";");
-					trsFile.write(transition.getAffTable().getfKey().getRef(attr) + ";");
-					trsFile.write("\n");
+					Attribute reference = transition.getAffTable().getfKey().getRef(attr);
+					
+					if(reference != null){
+						trsFile.write(reference.getName());
+						trsFile.write("@" + transition.getAffTable().getfKey().getRef(attr).getTable().getName() + ";");
+					}
+					else{
+						trsFile.write("-;");
+					}
+						trsFile.write("\n");
 				}
 			}
 			trsFile.close();
