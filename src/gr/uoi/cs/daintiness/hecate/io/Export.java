@@ -203,12 +203,13 @@ public class Export {
 				fTabSt.write((mov.getDeath()==versions-1 ? "-" : mov.getDeath())
 						+ ";");
 
-				fTabSt.write(mov.getTotalChanges().getTotal() + ";");
+			/*	fTabSt.write(mov.getTotalChanges().getTotal() + ";");
 				fTabSt.write(mov.getBirthSize() + ";");
-				fTabSt.write(mov.getDeathSize() + ";");
+				fTabSt.write(mov.getDeathSize() + ";");*/
 
 				int sumSize = 0;
 				int v = 0;
+				int totalChanges = 0;
 				for (int i = 0; i < versions; i++) {
 					if (mov != null && mov.containsKey(i)) {
 						fTab.write(mov.getSize(i) + ";");
@@ -220,6 +221,7 @@ public class Export {
 						fTabAll.write(mov.getSize(i) + "[" + c.toString() +
 								"]" + ";");
 						sumSize += mov.getSize(i);
+						totalChanges += c.getInsertions() + c.getDeletions() + c.getAttrTypeChange() + c.getKeyChange();
 						v++;
 
 					} else {
@@ -231,6 +233,9 @@ public class Export {
 						fTabAll.write("0|-|-|-|-;");
 					}
 				}
+				fTabSt.write(totalChanges + ";");
+				fTabSt.write(mov.getBirthSize() + ";");
+				fTabSt.write(mov.getDeathSize() + ";");
 				fTabSt.write(Float.toString((sumSize/(float)v)));
 				fTabSt.write("\n");
 
