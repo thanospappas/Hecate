@@ -44,11 +44,11 @@ public class Schema implements SqlItem{
 	}
 	
 	public int[] getSize() {
-		int attr = 0;
+		int attribute = 0;
 		for (Table t : this.tables.values()) {
-			attr += t.getSize();
+			attribute += t.getSize();
 		}
-		int[] res = {this.tables.size(), attr};
+		int[] res = {this.tables.size(), attribute};
 		return res;
 	}
 	

@@ -17,7 +17,7 @@ import javax.xml.bind.annotation.XmlElement;
  * @author iskoulis
  *
  */
-public abstract class Transition {
+public abstract class AtomicChange {
 
 	@XmlElement(name="table")
 	Table affectedTable;
@@ -26,13 +26,13 @@ public abstract class Transition {
 	@XmlAttribute(name="type")
 	String type;
 	
-	public Transition() {
+	public AtomicChange() {
 		affectedTable = null;
 		type = null;
 		affectedAtributes = new ArrayList<Attribute>();
 	}
 	
-	public void attribute(Attribute newAttribute) throws Exception {
+	public void setAttribute(Attribute newAttribute) throws Exception {
 		if (type == null) {
 			type = "UpdateTable";
 		}
@@ -45,12 +45,12 @@ public abstract class Transition {
 	}
 	
 
-	public void table(Table newTable) {
+	public void setTable(Table newTable) {
 		this.affectedTable = newTable;
 		this.affectedAtributes = newTable.getAttrs().values();
 	}
 	
-	public Table getAffTable(){
+	public Table getAffectedTable(){
 		return affectedTable;
 	}
 	
@@ -61,7 +61,7 @@ public abstract class Transition {
 		return affectedAtributes.size();
 	}
 	
-	public Collection<Attribute> getAffAttributes() {
+	public Collection<Attribute> getAffectedAttributes() {
 		return affectedAtributes;
 	}
 	

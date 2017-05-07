@@ -52,17 +52,17 @@ public class Table implements SqlItem{
 		this.updateAttributes();
 	}
 	
-	public void addAttribute(Attribute attr) {
-		this.attrs.put(attr.getName(), attr);
-		attr.setTable(this);
-		if (attr.isKey()) {
-			addAttrToPrimeKey(attr);
+	public void addAttribute(Attribute attribute) {
+		this.attrs.put(attribute.getName(), attribute);
+		attribute.setTable(this);
+		if (attribute.isKey()) {
+			addAttrToPrimeKey(attribute);
 		}
 	}
 	
-	public void addAttrToPrimeKey(Attribute attr) {
-		attr.setToKey();
-		this.pKey.add(attr);
+	public void addAttrToPrimeKey(Attribute attribute) {
+		attribute.setToKey();
+		this.pKey.add(attribute);
 	}
 	
 	// --Getters--
@@ -78,11 +78,11 @@ public class Table implements SqlItem{
 		return this.attrs;
 	}
 	
-	public PrimaryKey getpKey() {
+	public PrimaryKey getPrimaryKey() {
 		return this.pKey;
 	}
 	
-	public ForeignKey getfKey() {
+	public ForeignKey getForeignKey() {
 		return this.fKey;
 	}
 	

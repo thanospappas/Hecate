@@ -12,14 +12,14 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  */
 @XmlRootElement
-public class Insersion extends Transition {
+public class Insertion extends AtomicChange {
 
-	public Insersion() {
+	public Insertion() {
 		super();
 	}
 	
-	public void table(Table newTable) {
-		super.table(newTable);
+	public void setTable(Table newTable) {
+		super.setTable(newTable);
 		this.type = "NewTable";
 	}
 }

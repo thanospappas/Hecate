@@ -21,6 +21,8 @@ import javax.swing.UIManager.LookAndFeelInfo;
 
 import org.antlr.v4.runtime.RecognitionException;
 
+import com.sun.javafx.tk.Toolkit.Task;
+
 /**
  * The main window of Hecate
  * @author giskou
@@ -41,15 +43,17 @@ public class MainWindow extends JFrame{
 	private JMenuItem viewMetrics;
 	private JMenu help;
 	private JMenuItem helpAbout;
+	private JMenuItem helpManual;
 	
 	private OpenDialog openDialog;
 	private OpenFolderDialog openFolderDialog;
 	private MetricsDialog metricsDialog;
 	private AboutDialog aboutDialog;
+	private ManualDialog manualDialog;
 	private Image hecateIcon;
 	
 	private DiffResult res;
-	
+	private DiffWorker task;
 	/**
 	 * Default Constructor
 	 */
@@ -127,6 +131,10 @@ public class MainWindow extends JFrame{
 		fileFOpen = new JMenuItem("Open Folder...");
 		fileFOpen.setMnemonic(KeyEvent.VK_F);
 		fileFOpen.setToolTipText("Create diff tree from multiple files");
+		
+		
+		
+		//DiffWorker task = null;
 		fileFOpen.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 				if (openFolderDialog == null) {
@@ -137,7 +145,7 @@ public class MainWindow extends JFrame{
 					String path = openFolderDialog.getFolder();
 					File dir = new File(path);
 					try {
-						DiffWorker task = new DiffWorker(mainPanel, dir);
+						task = new DiffWorker(mainPanel, dir);
 						task.execute();
 						
 					} catch (Exception e) {
@@ -169,8 +177,10 @@ public class MainWindow extends JFrame{
 		viewMetrics.setToolTipText("View diff Metrics");
 		viewMetrics.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
+				System.out.println(res);
+				res = task.getRes();
 				if (res != null) {
-					metricsDialog = new MetricsDialog(res.met);
+					metricsDialog = new MetricsDialog(res.metrics);
 					metricsDialog.setVisible(true);
 				}
 			}
@@ -178,9 +188,27 @@ public class MainWindow extends JFrame{
 		view.add(viewMetrics);
 		menuBar.add(view);
 
+		
+		
+		
 		// Help
 		help = new JMenu("Help");
 		help.setMnemonic(KeyEvent.VK_H);
+		
+		// Help->About
+		helpManual = new JMenuItem("Manual");
+		
+		helpManual.setToolTipText("About Hecate");
+		helpManual.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				manualDialog = new ManualDialog();
+				manualDialog.setVisible(true);
+			}
+		});
+		help.add(helpManual);
+		
+		
+		
 		// Help->About
 		helpAbout = new JMenuItem("About");
 		helpAbout.setMnemonic(KeyEvent.VK_A);
@@ -192,8 +220,8 @@ public class MainWindow extends JFrame{
 			}
 		});
 		help.add(helpAbout);
+				
 		menuBar.add(help);
-		
 		setJMenuBar(menuBar);
 	}
 	

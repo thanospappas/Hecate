@@ -13,19 +13,19 @@ import gr.uoi.cs.daintiness.hecate.sql.Table;
  *
  */
 @XmlRootElement
-public class Update extends Transition{
+public class Update extends AtomicChange{
 
 	public Update() {
 		super();
 	}
 	
 	public void updateAttribute(Attribute newAttribute, String type) throws Exception {
-		super.attribute(newAttribute);
+		super.setAttribute(newAttribute);
 		this.type = type;
 	}
 	
 	public void updateTable(Table newTable, String type) {
-		super.table(newTable);
+		super.setTable(newTable);
 		this.type = type;
 	}
 }

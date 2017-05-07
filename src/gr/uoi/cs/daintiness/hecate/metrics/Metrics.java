@@ -15,8 +15,8 @@ public class Metrics {
 	private String newVersion;
 	private int insertions, deletions, alterations;
 	private int tableIns, tableDel, tableAlt;
-	private int attrIns, attrDel, attrAlt;
-	private int attrTabIns, attrTabDel;
+	private int attributeIns, attributeDel, attributeAlt;
+	private int attributeTabIns, attributeTabDel;
 	private int keyAlt;
 	private int numOfTables, numOfAttributes;
 	private int numOfNewTables, numOfNewAttributes;
@@ -45,8 +45,8 @@ public class Metrics {
 	private void reset() {
 		insertions = deletions = alterations = 0;
 		tableIns = tableDel = 0;
-		attrIns = attrDel = 0;
-		tableAlt = attrAlt = keyAlt = 0;
+		attributeIns = attributeDel = 0;
+		tableAlt = attributeAlt = keyAlt = 0;
 		numOfTables = numOfAttributes = 0;
 	}
 	
@@ -59,27 +59,27 @@ public class Metrics {
 	}
 
 	public void insertAttr () {
-		attrIns++; insertions++;
+		attributeIns++; insertions++;
 	}
 	public void insertTabAttr () {
-		attrTabIns++; insertions++;
+		attributeTabIns++; insertions++;
 	}
 	public void insetTable() {
 		tableIns++; insertions++;
 	}
 
 	public void deleteAttr() {
-		attrDel++; deletions++;
+		attributeDel++; deletions++;
 	}
 	public void deleteTabAttr() {
-		attrTabDel++; deletions++;
+		attributeTabDel++; deletions++;
 	}
 	public void deleteTable() {
 		tableDel++; deletions++;
 	}
 
 	public void alterAttr() {
-		attrAlt++;
+		attributeAlt++;
 		alterations++;
 	}
 	public void alterTable() {
@@ -116,7 +116,7 @@ public class Metrics {
 	}
 
 	public int[] getAttributeMetrics() {
-		int i[] = {this.attrIns, this.attrDel, this.attrAlt ,this.keyAlt, this.attrTabIns, this.attrTabDel};
+		int i[] = {this.attributeIns, this.attributeDel, this.attributeAlt ,this.keyAlt, this.attributeTabIns, this.attributeTabDel};
 		return i;
 	}
 
@@ -140,15 +140,15 @@ public class Metrics {
 	}
 
 	public void sanityCheck() {
-		int calcIns = tableIns + attrIns + attrTabIns;
-		assert insertions == calcIns: "Insertions misculculated";
-		int calcDel = tableDel + attrDel + attrTabDel;
-		assert deletions == calcDel: "Deletions misculculated";
+		int insertionsCounter = tableIns + attributeIns + attributeTabIns;
+		assert insertions == insertionsCounter: "Insertions misculculated";
+		int deletionsCounter = tableDel + attributeDel + attributeTabDel;
+		assert deletions == deletionsCounter: "Deletions misculculated";
 		int tableGrowth = numOfNewTables - numOfTables;
-		int calcTabChanges = tableIns - tableDel;
-		assert tableGrowth == calcTabChanges: "Table changes misculculated";
-		int attrGrowth = numOfNewAttributes - numOfAttributes;
-		int calcAttrChanges = attrIns + attrTabIns - attrDel - attrTabDel; 
-		assert attrGrowth == calcAttrChanges: "Attribute changes misculculated";
+		int tableChangesCounter = tableIns - tableDel;
+		assert tableGrowth == tableChangesCounter: "Table changes misculculated";
+		int attributeGrowth = numOfNewAttributes - numOfAttributes;
+		int attributeChangesCounter = attributeIns + attributeTabIns - attributeDel - attributeTabDel; 
+		assert attributeGrowth == attributeChangesCounter: "Attribute changes misculculated";
 	}
 }

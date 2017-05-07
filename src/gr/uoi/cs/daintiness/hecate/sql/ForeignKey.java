@@ -10,19 +10,19 @@ public class ForeignKey {
 		references = new HashMap<Attribute, Attribute>();
 	}
 	
-	public void addReference(Attribute orig, Attribute ref) {
-		references.put(orig, ref);
+	public void addReference(Attribute original, Attribute ref) {
+		references.put(original, ref);
 	}
 	
-	public boolean containsKey(Attribute attr){
-		if (references.containsKey(attr)) {
+	public boolean containsKey(Attribute attribute){
+		if (references.containsKey(attribute)) {
 			return true;
 		}
 		return false;
 	}
 	
-	public Attribute getRef(Attribute attr) {
-		return references.get(attr);
+	public Attribute getRef(Attribute attribute) {
+		return references.get(attribute);
 	}
 	
 	public String toString() {

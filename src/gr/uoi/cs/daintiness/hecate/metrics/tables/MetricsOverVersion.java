@@ -48,11 +48,11 @@ public class MetricsOverVersion extends TreeMap<Integer, TableMetrics> {
 		if (this.total != null) return this.total;
 		Changes c = new Changes();
 		for (Entry<Integer, TableMetrics> e : this.entrySet() ) {
-			Changes vc = e.getValue().getChanges();
-			c.addInsertion(vc.getInsertions());
-			c.addDeletion(vc.getDeletions());
-			c.addAttrTypeChange(vc.getAttrTypeChange());
-			c.addKeyChange(vc.getKeyChange());
+			Changes versionChanges = e.getValue().getChanges();
+			c.addInsertion(versionChanges.getInsertions());
+			c.addDeletion(versionChanges.getDeletions());
+			c.addAttrTypeChange(versionChanges.getAttrTypeChange());
+			c.addKeyChange(versionChanges.getKeyChange());
 		}
 		this.total = c;
 		return this.total;

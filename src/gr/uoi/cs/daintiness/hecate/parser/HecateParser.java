@@ -22,7 +22,7 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
  * the file given to the constructor.
  * @author giskou
  */
-public class HecateParser {
+public class HecateParser implements SqlInputParser{
 	static Schema s;
 
 	static class UnMach {
@@ -35,13 +35,14 @@ public class HecateParser {
 		}
 	}
 
+	
 	/**
 	 * 
 	 * @param filePath The path of the file to be parsed.
 	 * @throws IOException
 	 * @throws RecognitionException
 	 */
-	public static Schema parse(String filePath) {
+	public Schema parse(String filePath) {
 		CharStream      charStream = null;
 		
 		try {
@@ -50,13 +51,17 @@ public class HecateParser {
 			e.printStackTrace();
 			return null;
 		}
+		
 		DDLLexer        lexer = new DDLLexer(charStream) ;
 		TokenStream     tokenStream = new CommonTokenStream(lexer);
 		DDLParser       parser = new DDLParser(tokenStream) ;
+		
 		ParseTree       root = parser.start();
 		SchemaLoader    loader = new SchemaLoader();
+		
 		ParseTreeWalker walker = new ParseTreeWalker();
 		walker.walk(loader, root);
+		
 		File file = new File(filePath);
 		s.setTitle(file.getName());
 		return s;
@@ -174,7 +179,7 @@ public class HecateParser {
 					continue;
 				}
 //				System.out.println(orTable + "." + or[i] + "->" + reTable + "." + re[i] + "\n");
-				orTable.getfKey().addReference(or[i], re[i]);
+				orTable.getForeignKey().addReference(or[i], re[i]);
 			}
 		}
 
@@ -183,7 +188,7 @@ public class HecateParser {
 			Table reTable = s.getTables().get(ctx.reference_definition().table_name().getText());
 			Attribute or = a;
 			Attribute[] re = getNames(ctx.reference_definition().parNameList().getText(), reTable);
-			orTable.getfKey().addReference(or, re[0]);
+			orTable.getForeignKey().addReference(or, re[0]);
 		}
 
 		private void processUnmached() {
@@ -204,7 +209,7 @@ public class HecateParser {
 						continue;
 					}
 //					System.out.println(orTable + "." + or[i] + "->" + reTable + "." + re[i] + "\n");
-					orTable.getfKey().addReference(or[i], re[i]);
+					orTable.getForeignKey().addReference(or[i], re[i]);
 				}
 			}
 		}
@@ -239,4 +244,6 @@ public class HecateParser {
 			return s;
 		}
 	}
+
+	
 }

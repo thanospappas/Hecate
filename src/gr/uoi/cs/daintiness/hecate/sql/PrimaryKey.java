@@ -18,8 +18,8 @@ public class PrimaryKey implements SqlItem{
 		this.name = name;
 	}
 	
-	public void  add(Attribute attr) {
-		key.put(attr.getName(), attr);
+	public void  add(Attribute attribute) {
+		key.put(attribute.getName(), attribute);
 	}
 	
 	@Override

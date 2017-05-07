@@ -12,14 +12,14 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  */
 @XmlRootElement
-public class Deletion extends Transition {
+public class Deletion extends AtomicChange {
 
 	public Deletion() {
 		super();
 	}
 	
-	public void table(Table newTable) {
-		super.table(newTable);
+	public void setTable(Table newTable) {
+		super.setTable(newTable);
 		this.type = "DeleteTable";
 	}
 }

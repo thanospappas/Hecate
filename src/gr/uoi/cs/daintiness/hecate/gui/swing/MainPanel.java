@@ -1,8 +1,9 @@
 package gr.uoi.cs.daintiness.hecate.gui.swing;
 
-import gr.uoi.cs.daintiness.hecate.graph.tree.HecateRowModel;
-import gr.uoi.cs.daintiness.hecate.graph.tree.HecateTreeModel;
-import gr.uoi.cs.daintiness.hecate.graph.tree.HecateTreeRenderer;
+
+import gr.uoi.cs.daintiness.hecate.gui.swing.graph.tree.HecateRowModel;
+import gr.uoi.cs.daintiness.hecate.gui.swing.graph.tree.HecateTreeModel;
+import gr.uoi.cs.daintiness.hecate.gui.swing.graph.tree.HecateTreeRenderer;
 import gr.uoi.cs.daintiness.hecate.sql.Schema;
 import gr.uoi.cs.daintiness.hecate.sql.Table;
 

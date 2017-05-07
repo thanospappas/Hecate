@@ -6,7 +6,7 @@ import gr.uoi.cs.daintiness.hecate.sql.Schema;
 import gr.uoi.cs.daintiness.hecate.sql.SqlItem;
 import gr.uoi.cs.daintiness.hecate.sql.Table;
 import gr.uoi.cs.daintiness.hecate.transitions.Deletion;
-import gr.uoi.cs.daintiness.hecate.transitions.Insersion;
+import gr.uoi.cs.daintiness.hecate.transitions.Insertion;
 import gr.uoi.cs.daintiness.hecate.transitions.Update;
 
 import java.util.Iterator;
@@ -18,12 +18,12 @@ import java.util.Iterator;
  * @author giskou
  *
  */
-public class Delta {
+public class SqlDifferenceExtractor implements DifferenceExtractor{
 
-	private static Insersion in;
-	private static Deletion out;
-	private static Update up;
-	private static DiffResult res;
+	private static Insertion insertion;
+	private static Deletion deletion;
+	private static Update update;
+	private static DiffResult diffResult;
 		
 	/**
 	 * This function performs the main diff algorithm for
@@ -40,29 +40,30 @@ public class Delta {
 	 * deleted and we move to the next item on the original Map. If a
 	 * Map reaches at an end then the remaining items on the other Map
 	 * are marked as inserted or deleted accordingly.
-	 * @param A
+	 * @param schema1
 	 *   The original schema
-	 * @param B
+	 * @param schema2
 	 *   The modified version of the original schema
 	 */
-	public static DiffResult minus(Schema A, Schema B) {
-		res = new DiffResult();
-		res.met.newRevision();
-		res.setVersionNames(A.getName(), B.getName());
+	public DiffResult getDifference(Schema schema1, Schema schema2) {
+		diffResult = new DiffResult();
+		diffResult.metrics.newRevision();
+		diffResult.setVersionNames(schema1.getName(), schema2.getName());
 		String oldTableKey = null, newTableKey = null ;
 		String oldAttrKey = null, newAttrKey = null ;
-		Iterator<String> oldTableKeys = A.getTables().keySet().iterator() ;
-		Iterator<Table> oldTableValues = A.getTables().values().iterator() ;
-		Iterator<String> newTableKeys = B.getTables().keySet().iterator() ;
-		Iterator<Table> newTableValues = B.getTables().values().iterator() ;
-		setOriginalSizes(A.getSize(), B.getSize());
+		Iterator<String> oldTableKeys = schema1.getTables().keySet().iterator() ;
+		Iterator<Table> oldTableValues = schema1.getTables().values().iterator() ;
+		Iterator<String> newTableKeys = schema2.getTables().keySet().iterator() ;
+		Iterator<Table> newTableValues = schema2.getTables().values().iterator() ;
+		setOriginalSizes(schema1.getSize(), schema2.getSize());
+		
 		if (oldTableKeys.hasNext() && newTableKeys.hasNext()){
 			oldTableKey = oldTableKeys.next() ;
 			Table oldTable = (Table) oldTableValues.next() ;
 			newTableKey = newTableKeys.next() ;
 			Table newTable = (Table) newTableValues.next() ;
 			while(true) {
-				in = null; out = null; up = null;
+				insertion = null; deletion = null; update = null;
 				if (oldTableKey.compareTo(newTableKey) == 0) {            // ** Matched tables
 					match(oldTable, newTable);
 					// check attributes
@@ -77,15 +78,18 @@ public class Delta {
 						newAttrKey = newAttributeKeys.next() ;
 						Attribute newAttr = newAttributeValues.next();
 						while (true) {
-							if (oldAttrKey.compareTo(newAttrKey) == 0) {                   // possible attribute match
-								if (oldAttr.getType().compareTo(newAttr.getType()) == 0){  // check attribute type
-									if (oldAttr.isKey() == newAttr.isKey()) {              // ** Matched attributes
+							// possible attribute match
+							if (oldAttrKey.compareTo(newAttrKey) == 0) {
+								// check attribute type
+								if (oldAttr.getType().compareTo(newAttr.getType()) == 0){
+									// ** Matched attributes
+									if (oldAttr.isKey() == newAttr.isKey()) {
 										match(oldAttr, newAttr);
-									} else {                                               // * attribute key changed
-										attrKeyChange(oldAttr, newAttr);
+									} else {// * attribute key changed
+										handleAttrKeyChange(oldAttr, newAttr);
 									}
-								} else {                                                   // attribute type changed
-									attrTypeChange(oldAttr, newAttr);
+								} else {// attribute type changed
+									handleAttrTypeChange(oldAttr, newAttr);
 								}
 								// move both attributes
 								if (oldAttributeKeys.hasNext() && newAttributeKeys.hasNext()) {
@@ -94,29 +98,29 @@ public class Delta {
 									newAttrKey = newAttributeKeys.next() ;
 									newAttr = newAttributeValues.next();
 									continue;
-								} else {            // one of the lists is empty, must process the rest of the other
+								} else {// one of the lists is empty, must process the rest of the other
 									break ;
 								}
 							} else if (oldAttrKey.compareTo(newAttrKey) < 0) {           // ** Deleted attributes
-								attrDel(oldAttr, newTable);
+								handleAttrDel(oldAttr, newTable);
 								// move old only attributes
 								if (oldAttributeKeys.hasNext()) {
 									oldAttrKey = oldAttributeKeys.next();
 									oldAttr = oldAttributeValues.next();
 									continue;
 								} else {                  // no more old
-									attrIns(oldTable, newAttr);
+									handleAttrIns(oldTable, newAttr);
 									break ;
 								}
 							} else {                    // ** Inserted attributes
-								attrIns(oldTable, newAttr);
+								handleAttrIns(oldTable, newAttr);
 								// move new only
 								if (newAttributeKeys.hasNext()) {
 									newAttrKey = newAttributeKeys.next() ;
 									newAttr = newAttributeValues.next();
 									continue;
 								} else {                  // no more new
-									attrDel(oldAttr, newTable);
+									handleAttrDel(oldAttr, newTable);
 									break ;
 								}
 							}
@@ -126,12 +130,12 @@ public class Delta {
 					while (oldAttributeKeys.hasNext()) {       // delete remaining old (not found in new)
 						oldAttrKey = (String) oldAttributeKeys.next();
 						Attribute oldAttr = oldAttributeValues.next();
-						attrDel(oldAttr, newTable);
+						handleAttrDel(oldAttr, newTable);
 					}
 					while (newAttributeKeys.hasNext()) {        // insert remaining new (not found in old)
 						newAttrKey = (String) newAttributeKeys.next();
 						Attribute newAttr = newAttributeValues.next();
-						attrIns(oldTable, newAttr);
+						handleAttrIns(oldTable, newAttr);
 					}
 					//  ** Done with attributes **
 					if (newTable.getMode() == SqlItem.UPDATED) {
@@ -147,23 +151,23 @@ public class Delta {
 						break ;
 					}
 				} else if (oldTableKey.compareTo(newTableKey) < 0) {  // ** Table Deleted
-					tableDel(oldTable);
+					handleTableDel(oldTable);
 					if (oldTableKeys.hasNext()) {                     // move old only
 						oldTableKey = oldTableKeys.next() ;
 						oldTable = (Table) oldTableValues.next() ;
 						continue;
 					} else {
-						tableIns(newTable);
+						handleTableIns(newTable);
 						break;
 					}
 				} else {                                             // ** Table Inserted
-					tableIns(newTable);
+					handleTableIns(newTable);
 					if (newTableKeys.hasNext()) {                    // move new only
 						newTableKey = newTableKeys.next() ;
 						newTable = (Table) newTableValues.next() ;
 						continue;
 					} else {
-						tableDel(oldTable);
+						handleTableDel(oldTable);
 						break ;
 					}
 				}
@@ -173,69 +177,69 @@ public class Delta {
 		while (oldTableKeys.hasNext()) {
 			oldTableKey = (String) oldTableKeys.next();
 			Table oldTable = (Table) oldTableValues.next();
-			tableDel(oldTable);
+			handleTableDel(oldTable);
 		}
 		while (newTableKeys.hasNext()) {
 			newTableKey = (String) newTableKeys.next();
 			Table newTable = (Table) newTableValues.next();
-			tableIns(newTable);
+			handleTableIns(newTable);
 		}
-		res.met.sanityCheck();
-		return res;
+		diffResult.metrics.sanityCheck();
+		return diffResult;
 	}
 
-	private static void attrIns(Table oldTable, Attribute newAttr) {
-		res.met.insertAttr();
+	private static void handleAttrIns(Table oldTable, Attribute newAttr) {
+		diffResult.metrics.insertAttr();
 		insert(newAttr);
 		newAttr.setMode(SqlItem.INSERTED);
 		oldTable.setMode(SqlItem.UPDATED);
 		newAttr.getTable().setMode(SqlItem.UPDATED);
-		res.tInfo.addChange(oldTable.getName(), res.met.getNumRevisions(), ChangeType.Insertion);
+		diffResult.tablesInfo.addChange(oldTable.getName(), diffResult.metrics.getNumRevisions(), ChangeType.Insertion);
 	}
 
-	private static void attrDel(Attribute oldAttr, Table newTable) {
-		res.met.deleteAttr();
+	private static void handleAttrDel(Attribute oldAttr, Table newTable) {
+		diffResult.metrics.deleteAttr();
 		delete(oldAttr);
 		oldAttr.setMode(SqlItem.DELETED);
 		oldAttr.getTable().setMode(SqlItem.UPDATED);
 		newTable.setMode(SqlItem.UPDATED);
-		res.tInfo.addChange(newTable.getName(), res.met.getNumRevisions(), ChangeType.Deletion);
+		diffResult.tablesInfo.addChange(newTable.getName(), diffResult.metrics.getNumRevisions(), ChangeType.Deletion);
 	}
 
-	private static void attrTypeChange(Attribute oldAttr, Attribute newAttr) {
-		res.met.alterAttr();
+	private static void handleAttrTypeChange(Attribute oldAttr, Attribute newAttr) {
+		diffResult.metrics.alterAttr();
 		update(newAttr, "TypeChange");
 		oldAttr.getTable().setMode(SqlItem.UPDATED);
 		newAttr.getTable().setMode(SqlItem.UPDATED);
 		oldAttr.setMode(SqlItem.UPDATED);
 		newAttr.setMode(SqlItem.UPDATED);
-		res.tInfo.addChange(newAttr.getTable().getName(), res.met.getNumRevisions(), ChangeType.AttrTypeChange);
+		diffResult.tablesInfo.addChange(newAttr.getTable().getName(), diffResult.metrics.getNumRevisions(), ChangeType.AttrTypeChange);
 	}
 
-	private static void attrKeyChange(Attribute oldAttr, Attribute newAttr) {
-		res.met.alterKey();
+	private static void handleAttrKeyChange(Attribute oldAttr, Attribute newAttr) {
+		diffResult.metrics.alterKey();
 		update(newAttr, "KeyChange");
 		oldAttr.getTable().setMode(SqlItem.UPDATED);
 		newAttr.getTable().setMode(SqlItem.UPDATED);
 		oldAttr.setMode(SqlItem.UPDATED);
 		newAttr.setMode(SqlItem.UPDATED);
-		res.tInfo.addChange(newAttr.getTable().getName(), res.met.getNumRevisions(), ChangeType.KeyChange);
+		diffResult.tablesInfo.addChange(newAttr.getTable().getName(), diffResult.metrics.getNumRevisions(), ChangeType.KeyChange);
 	}
 	
-	private static void tableDel(Table t) {
+	private static void handleTableDel(Table t) {
 		delete(t);
-		res.met.deleteTable();
+		diffResult.metrics.deleteTable();
 		markAll(t, SqlItem.DELETED);     // mark attributes deleted
 	}
 	
-	private static void tableIns(Table t) {
+	private static void handleTableIns(Table t) {
 		insert(t);
-		res.met.insetTable();
+		diffResult.metrics.insetTable();
 		markAll(t, SqlItem.INSERTED);     // mark attributes inserted
 	}
 	
 	private static void tableAlt(Table t) {
-		res.met.alterTable();
+		diffResult.metrics.alterTable();
 	}
 
 	private static void match(SqlItem oldI, SqlItem newI) {
@@ -248,8 +252,8 @@ public class Delta {
 		for (Iterator<Attribute> i = t.getAttrs().values().iterator(); i.hasNext(); ) {
 			i.next().setMode(mode);
 			switch(mode){
-				case SqlItem.INSERTED: res.met.insertTabAttr(); break;
-				case SqlItem.DELETED: res.met.deleteTabAttr(); break;
+				case SqlItem.INSERTED: diffResult.metrics.insertTabAttr(); break;
+				case SqlItem.DELETED: diffResult.metrics.deleteTabAttr(); break;
 				default:;
 			}
 		}
@@ -257,54 +261,54 @@ public class Delta {
 	
 	private static void insert(SqlItem item) {
 		if (item.getClass() == Attribute.class) {
-			if (in == null) {
-				in = new Insersion();
-				res.tl.add(in);
+			if (insertion == null) {
+				insertion = new Insertion();
+				diffResult.transitionList.add(insertion);
 			}
 			try {
-				in.attribute( (Attribute) item);
+				insertion.setAttribute( (Attribute) item);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		} else if (item.getClass() == Table.class) {
-			in = new Insersion();
-			res.tl.add(in);
-			in.table( (Table) item);
+			insertion = new Insertion();
+			diffResult.transitionList.add(insertion);
+			insertion.setTable( (Table) item);
 		}
 	}
 	
 	private static void delete(SqlItem item) {
 		if (item.getClass() == Attribute.class) {
-			if (out == null) {
-				out = new Deletion();
-				res.tl.add(out);
+			if (deletion == null) {
+				deletion = new Deletion();
+				diffResult.transitionList.add(deletion);
 			}
 			try {
-				out.attribute( (Attribute) item);
+				deletion.setAttribute( (Attribute) item);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		} else if (item.getClass() == Table.class) {
-			out = new Deletion();
-			res.tl.add(out);
-			out.table( (Table) item);
+			deletion = new Deletion();
+			diffResult.transitionList.add(deletion);
+			deletion.setTable( (Table) item);
 		}
 	}
 	
 	private static void update(Attribute item, String type) {
-		if (up == null) {
-			up = new Update();
-			res.tl.add(up);
+		if (update == null) {
+			update = new Update();
+			diffResult.transitionList.add(update);
 		}
 		try {
-			up.updateAttribute((Attribute)item, type);
+			update.updateAttribute((Attribute)item, type);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
 	private static void setOriginalSizes(int[] sizeA, int[] sizeB) {
-		res.met.setOrigTables(sizeA[0]); res.met.setOrigAttrs(sizeA[1]);
-		res.met.setNewTables(sizeB[0]); res.met.setNewAttrs(sizeB[1]);
+		diffResult.metrics.setOrigTables(sizeA[0]); diffResult.metrics.setOrigAttrs(sizeA[1]);
+		diffResult.metrics.setNewTables(sizeB[0]); diffResult.metrics.setNewAttrs(sizeB[1]);
 	}
 }
