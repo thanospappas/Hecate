@@ -1,7 +1,7 @@
 package gr.uoi.cs.daintiness.hecate.gui.swing;
 
 import gr.uoi.cs.daintiness.hecate.Hecate;
-import gr.uoi.cs.daintiness.hecate.diff.DiffResult;
+import gr.uoi.cs.daintiness.hecate.metrics.Metrics;
 
 import java.awt.Dimension;
 import java.awt.Image;
@@ -52,7 +52,7 @@ public class MainWindow extends JFrame{
 	private ManualDialog manualDialog;
 	private Image hecateIcon;
 	
-	private DiffResult res;
+	private Metrics metrics;
 	private DiffWorker task;
 	/**
 	 * Default Constructor
@@ -177,10 +177,10 @@ public class MainWindow extends JFrame{
 		viewMetrics.setToolTipText("View diff Metrics");
 		viewMetrics.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				System.out.println(res);
-				res = task.getRes();
-				if (res != null) {
-					metricsDialog = new MetricsDialog(res.metrics);
+				
+				metrics = task.getMetrics();
+				if (metrics != null) {
+					metricsDialog = new MetricsDialog(metrics);
 					metricsDialog.setVisible(true);
 				}
 			}

@@ -25,11 +25,11 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 public class HecateParser implements SqlInputParser{
 	static Schema s;
 
-	static class UnMach {
+	static class UnMatched {
 		Table orT;
 		DDLParser.ForeignContext ctx;
 		
-		public UnMach(Table orT, DDLParser.ForeignContext ctx) {
+		public UnMatched(Table orT, DDLParser.ForeignContext ctx) {
 			this.orT = orT;
 			this.ctx = ctx;
 		}
@@ -75,7 +75,7 @@ public class HecateParser implements SqlInputParser{
 		boolean foundAlterConst = false;
 		boolean foundLineConst = false;
 		String alteringTable = null;
-		List<UnMach> unMached = new ArrayList<HecateParser.UnMach>();
+		List<UnMatched> unMached = new ArrayList<HecateParser.UnMatched>();
 
 		public void enterStart (DDLParser.StartContext ctx) {
 //			System.out.println("Starting");
@@ -160,7 +160,7 @@ public class HecateParser implements SqlInputParser{
 				} else {
 					reTable = s.getTables().get(reTableName);
 					if (reTable == null) {
-						unMached.add(new UnMach(orTable, ctx));
+						unMached.add(new UnMatched(orTable, ctx));
 						return;
 					}
 				}
@@ -192,7 +192,7 @@ public class HecateParser implements SqlInputParser{
 		}
 
 		private void processUnmached() {
-			for (UnMach item : unMached) {
+			for (UnMatched item : unMached) {
 				DDLParser.ForeignContext ctx = item.ctx;
 				Table orTable = item.orT;
 				String reTableName = ctx.reference_definition().table_name().getText();

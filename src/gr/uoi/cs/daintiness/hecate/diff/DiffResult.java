@@ -13,9 +13,9 @@ import gr.uoi.cs.daintiness.hecate.transitions.TransitionList;
  */
 public class DiffResult {
 
-	final public TransitionList transitionList;
-	final public Metrics metrics;
-	final public TablesInfo tablesInfo;
+	final private TransitionList transitionList;
+	final private Metrics metrics;
+	final private TablesInfo tablesInfo;
 	/**
 	 * 
 	 */
@@ -32,14 +32,19 @@ public class DiffResult {
 	
 	public void clear() {
 		this.tablesInfo.clear();
-		metrics.resetRevisions();
+		this.metrics.resetRevisions();
 	}
 	
 	public TransitionList getTransitionList(){
-		return transitionList;
+		return this.transitionList;
 	}
 	
 	public TablesInfo getTableInfo(){
-		return tablesInfo;
+		return this.tablesInfo;
 	}
+	
+	public Metrics getMetrics(){
+		return this.metrics;
+	}
+	
 }

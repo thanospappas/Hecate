@@ -18,7 +18,6 @@ public class Table implements SqlItem{
 	private ForeignKey fKey;
 	private int mode;
 	
-	// --Constructors--
 	public Table() {
 		this.name = null;
 		this.attrs = new TreeMap<String, Attribute>();
@@ -65,7 +64,6 @@ public class Table implements SqlItem{
 		this.pKey.add(attribute);
 	}
 	
-	// --Getters--
 	public String getName() {
 		return this.name;
 	}

@@ -45,7 +45,7 @@ public class Attribute implements SqlItem{
 		this.mode = UPDATED;
 	}
 	
-	// --Getters--
+
 	public Table getTable() {
 		return this.table;
 	}

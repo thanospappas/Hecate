@@ -80,7 +80,5 @@ public class Schema implements SqlItem{
 	}
 
 	@Override
-	public void setMode(int mode) {
-	
-	}
+	public void setMode(int mode) {	}
 }
