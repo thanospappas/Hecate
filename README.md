@@ -1,4 +1,4 @@
-# API REFERENCE
+# API Reference
 
  The HecateAPI implements the 3 basic use-cases of the system.
 
@@ -40,11 +40,10 @@
 	
 	
 	
-}
 
 
 ## Authors
 
 * **Nikos Koufos**
 * **Thanos Pappas**
-* **Mihalis Sotiriou**
+* **Michalis Sotiriou**
