@@ -22,9 +22,9 @@
 	   @param transitions Data structure that stores a list of transitions.
 	   @param operation One of the following:
 	   
-	   * **metrics:** save metrics
-	   * **tables:** save tables info
-	   * **transitions:** save transitions information
+	   metrics: save metrics
+	   tables: save tables info
+	   ransitions: save transitions information
 	    
 	
 ### public DiffResult getDifference(Schema schema1, Schema schema2);
