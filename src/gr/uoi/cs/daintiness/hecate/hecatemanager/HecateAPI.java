@@ -4,8 +4,8 @@ import gr.uoi.cs.daintiness.hecate.diff.DiffResult;
 import gr.uoi.cs.daintiness.hecate.sql.Schema;
 import gr.uoi.cs.daintiness.hecate.transitions.Transitions;
 /**
-* The HecateAPI implements the basic use-cases
-* simply displays "Hello World!" to the standard output.
+* The HecateAPI implements the 3 basic use-cases
+* of the system.
 *
 * @author  Nikos Koufos, Thanos Pappas, Mihalis Sotiriou
 * @version 1.0
