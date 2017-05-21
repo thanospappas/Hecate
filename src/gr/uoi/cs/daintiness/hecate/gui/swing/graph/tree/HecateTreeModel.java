@@ -1,4 +1,4 @@
-package gr.uoi.cs.daintiness.hecate.graph.tree;
+package gr.uoi.cs.daintiness.hecate.gui.swing.graph.tree;
 
 import gr.uoi.cs.daintiness.hecate.sql.Attribute;
 import gr.uoi.cs.daintiness.hecate.sql.Schema;
@@ -68,8 +68,8 @@ public class HecateTreeModel implements TreeModel {
 			return -1;
 		}
 		else if (type == Table.class) {
-			TreeMap<String, Attribute> attrs = ((Table)parent).getAttrs();
-			for (Map.Entry<String, Attribute> a : attrs.entrySet()) {
+			TreeMap<String, Attribute> attributes = ((Table)parent).getAttrs();
+			for (Map.Entry<String, Attribute> a : attributes.entrySet()) {
 				if (a.getKey().compareTo(child.toString()) == 0) { return count; }
 				else { count++; } 
 			}

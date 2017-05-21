@@ -47,7 +47,7 @@ public class SqlDifferenceExtractor implements DifferenceExtractor{
 	 */
 	public DiffResult getDifference(Schema schema1, Schema schema2) {
 		diffResult = new DiffResult();
-		diffResult.getMetrics().newRevision();
+		diffResult.getMetrics().addNewRevision();
 		diffResult.setVersionNames(schema1.getName(), schema2.getName());
 		String oldTableKey = null, newTableKey = null ;
 		String oldAttrKey = null, newAttrKey = null ;
@@ -68,7 +68,7 @@ public class SqlDifferenceExtractor implements DifferenceExtractor{
 					match(oldTable, newTable);
 					// check attributes
 					Iterator<String> oldAttributeKeys = oldTable.getAttrs().keySet().iterator();
-					Iterator<Attribute> oldAttributeValues = oldTable.getAttrs().values().iterator() ;
+					Iterator<Attribute> oldAttributeValues = oldTable.getAttrs().values().iterator();
 					Iterator<String> newAttributeKeys = newTable.getAttrs().keySet().iterator();
 					Iterator<Attribute> newAttributeValues = newTable.getAttrs().values().iterator() ;
 					
@@ -98,10 +98,12 @@ public class SqlDifferenceExtractor implements DifferenceExtractor{
 									newAttrKey = newAttributeKeys.next() ;
 									newAttr = newAttributeValues.next();
 									continue;
-								} else {// one of the lists is empty, must process the rest of the other
+								} else {
+									// one of the lists is empty, must process the rest of the other
 									break ;
 								}
-							} else if (oldAttrKey.compareTo(newAttrKey) < 0) {           // ** Deleted attributes
+							} else if (oldAttrKey.compareTo(newAttrKey) < 0) {
+						        // ** Deleted attributes
 								handleAttrDel(oldAttr, newTable);
 								// move old only attributes
 								if (oldAttributeKeys.hasNext()) {
@@ -127,12 +129,14 @@ public class SqlDifferenceExtractor implements DifferenceExtractor{
 						}
 					}
 					// check remaining attributes
-					while (oldAttributeKeys.hasNext()) {       // delete remaining old (not found in new)
+					while (oldAttributeKeys.hasNext()) {
+						// delete remaining old (not found in new)
 						oldAttrKey = (String) oldAttributeKeys.next();
 						Attribute oldAttr = oldAttributeValues.next();
 						handleAttrDel(oldAttr, newTable);
 					}
-					while (newAttributeKeys.hasNext()) {        // insert remaining new (not found in old)
+					// insert remaining new (not found in old)
+					while (newAttributeKeys.hasNext()) {
 						newAttrKey = (String) newAttributeKeys.next();
 						Attribute newAttr = newAttributeValues.next();
 						handleAttrIns(oldTable, newAttr);
@@ -184,7 +188,7 @@ public class SqlDifferenceExtractor implements DifferenceExtractor{
 			Table newTable = (Table) newTableValues.next();
 			handleTableIns(newTable);
 		}
-		diffResult.getMetrics().sanityCheck();
+		diffResult.getMetrics().computeSanityCheck();
 		return diffResult;
 	}
 
@@ -194,7 +198,8 @@ public class SqlDifferenceExtractor implements DifferenceExtractor{
 		newAttr.setMode(SqlItem.INSERTED);
 		oldTable.setMode(SqlItem.UPDATED);
 		newAttr.getTable().setMode(SqlItem.UPDATED);
-		diffResult.getTableInfo().addChange(oldTable.getName(), diffResult.getMetrics().getNumRevisions(), ChangeType.Insertion);
+		diffResult.getTableInfo().addChange(oldTable.getName(), 
+				diffResult.getMetrics().getNumRevisions(), ChangeType.Insertion);
 	}
 
 	private static void handleAttrDel(Attribute oldAttr, Table newTable) {
@@ -203,7 +208,8 @@ public class SqlDifferenceExtractor implements DifferenceExtractor{
 		oldAttr.setMode(SqlItem.DELETED);
 		oldAttr.getTable().setMode(SqlItem.UPDATED);
 		newTable.setMode(SqlItem.UPDATED);
-		diffResult.getTableInfo().addChange(newTable.getName(), diffResult.getMetrics().getNumRevisions(), ChangeType.Deletion);
+		diffResult.getTableInfo().addChange(newTable.getName(), 
+				diffResult.getMetrics().getNumRevisions(), ChangeType.Deletion);
 	}
 
 	private static void handleAttrTypeChange(Attribute oldAttr, Attribute newAttr) {
@@ -213,7 +219,8 @@ public class SqlDifferenceExtractor implements DifferenceExtractor{
 		newAttr.getTable().setMode(SqlItem.UPDATED);
 		oldAttr.setMode(SqlItem.UPDATED);
 		newAttr.setMode(SqlItem.UPDATED);
-		diffResult.getTableInfo().addChange(newAttr.getTable().getName(), diffResult.getMetrics().getNumRevisions(), ChangeType.AttrTypeChange);
+		diffResult.getTableInfo().addChange(newAttr.getTable().getName(), 
+				diffResult.getMetrics().getNumRevisions(), ChangeType.AttrTypeChange);
 	}
 
 	private static void handleAttrKeyChange(Attribute oldAttr, Attribute newAttr) {
@@ -223,7 +230,8 @@ public class SqlDifferenceExtractor implements DifferenceExtractor{
 		newAttr.getTable().setMode(SqlItem.UPDATED);
 		oldAttr.setMode(SqlItem.UPDATED);
 		newAttr.setMode(SqlItem.UPDATED);
-		diffResult.getTableInfo().addChange(newAttr.getTable().getName(), diffResult.getMetrics().getNumRevisions(), ChangeType.KeyChange);
+		diffResult.getTableInfo().addChange(newAttr.getTable().getName(), 
+				diffResult.getMetrics().getNumRevisions(), ChangeType.KeyChange);
 	}
 	
 	private static void handleTableDel(Table t) {
@@ -243,8 +251,8 @@ public class SqlDifferenceExtractor implements DifferenceExtractor{
 	}
 
 	private static void match(SqlItem oldI, SqlItem newI) {
-		oldI.setMode(SqlItem.MACHED);
-		newI.setMode(SqlItem.MACHED);
+		oldI.setMode(SqlItem.MATCHED);
+		newI.setMode(SqlItem.MATCHED);
 	}
 
 	private static void markAll(Table t, int mode) {

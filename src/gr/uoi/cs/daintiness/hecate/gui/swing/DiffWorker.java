@@ -3,7 +3,7 @@
  */
 package gr.uoi.cs.daintiness.hecate.gui.swing;
 
-import gr.uoi.cs.daintiness.hecate.HecateManager.ApiExecutioner;
+import gr.uoi.cs.daintiness.hecate.hecatemanager.ApiExecutioner;
 
 import gr.uoi.cs.daintiness.hecate.metrics.Metrics;
 
@@ -31,7 +31,7 @@ public class DiffWorker extends SwingWorker<Void, Void> {
 	private boolean folderDiffOn;
 	
 	
-	private ApiExecutioner ae;
+	private ApiExecutioner apiExecutioner;
 	
 	
 	public DiffWorker(MainPanel mp,
@@ -41,7 +41,7 @@ public class DiffWorker extends SwingWorker<Void, Void> {
 		this.newFile = newFile;
 		folderDiffOn = false;
 		
-		ae = new ApiExecutioner(null);
+		apiExecutioner = new ApiExecutioner(null);
 	}
 	
 	public DiffWorker(MainPanel mp, File folder) {
@@ -50,7 +50,7 @@ public class DiffWorker extends SwingWorker<Void, Void> {
 		
 		System.out.println(this.folder.getAbsolutePath());
 	
-		ae = new ApiExecutioner(this.folder.getAbsolutePath());
+		apiExecutioner = new ApiExecutioner(this.folder.getAbsolutePath());
 	}
 
 	@Override
@@ -60,7 +60,7 @@ public class DiffWorker extends SwingWorker<Void, Void> {
 	
 
 		if (oldFile != null && newFile != null) {
-			ae.handleSchemaPairs(oldFile,newFile);
+			apiExecutioner.handleSchemaPairs(oldFile,newFile);
 		} else if (folder != null){
 			folderDiffOn = true;
 			
@@ -73,24 +73,24 @@ public class DiffWorker extends SwingWorker<Void, Void> {
 				pm.setNote("Parsing " + list[i]);
 				
 				
-				ae.setOldSchema(path + File.separator + list[i], i);
+				apiExecutioner.setOldSchema(path + File.separator + list[i], i);
 				
 				pm.setNote("Parsing " + list[i+1]);
 				
-				ae.setNewSchema(path + File.separator + list[i+1], i, list);
+				apiExecutioner.setNewSchema(path + File.separator + list[i+1], i, list);
 				
 				pm.setNote(list[i] + "-" + list[i+1]);
 				
-				ae.getDifference();
-				ae.exportMetrics();
+				apiExecutioner.getDifference();
+				apiExecutioner.exportMetrics();
 				pm.setProgress(i+1);	
 			}
 			
-			ae.exportFiles(path, list);
+			apiExecutioner.exportFiles(path, list);
 			
 
-			String parrent = (new File(path)).getParent();
-			directory = new File(parrent + File.separator + "results");
+			String parent = (new File(path)).getParent();
+			directory = new File(parent + File.separator + "results");
 			
 			folder = null;
 		}
@@ -98,19 +98,20 @@ public class DiffWorker extends SwingWorker<Void, Void> {
 	}
 	
 	public Metrics getMetrics() {
-		return ae.getMetrics();
+		return apiExecutioner.getMetrics();
 	}
 	
 	@Override
 	protected void done() {
 		
-		mp.drawSchema(ae.getOldSchema(), "old");
-		mp.drawSchema(ae.getNewSchema(), "new");
+		mp.drawSchema(apiExecutioner.getOldSchema(), "old");
+		mp.drawSchema(apiExecutioner.getNewSchema(), "new");
 		pm.setProgress(pm.getMaximum());
 		
 		if(folderDiffOn){
 			JOptionPane.showConfirmDialog(null,
-	                "Metrics were exported to:" +directory.getPath() , "Metrics were saved", JOptionPane.DEFAULT_OPTION);
+	                "Metrics were exported to:" +directory.getPath() ,
+	                "Metrics were saved", JOptionPane.DEFAULT_OPTION);
 		}
 		
 		super.done();

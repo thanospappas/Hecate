@@ -11,48 +11,48 @@ import javax.xml.bind.annotation.XmlElement;
 public class Table implements SqlItem{
 	@XmlElement
 	private String name;
-	private TreeMap<String, Attribute> attrs;
+	private TreeMap<String, Attribute> attributes;
 	@XmlElement
-	private PrimaryKey pKey;
+	private PrimaryKey primaryKey;
 	@XmlElement
-	private ForeignKey fKey;
+	private ForeignKey foreignKey;
 	private int mode;
 	
 	public Table() {
 		this.name = null;
-		this.attrs = new TreeMap<String, Attribute>();
-		this.pKey = null;
-		this.fKey = new ForeignKey();
+		this.attributes = new TreeMap<String, Attribute>();
+		this.primaryKey = null;
+		this.foreignKey = new ForeignKey();
 	}
 	
 	public Table(String name) {
 		this.name = name;
-		this.attrs = new TreeMap<String, Attribute>();
-		this.pKey = new PrimaryKey();
-		this.fKey = new ForeignKey();
+		this.attributes = new TreeMap<String, Attribute>();
+		this.primaryKey = new PrimaryKey();
+		this.foreignKey = new ForeignKey();
 	}
 	
 	public Table(String name, TreeMap<String, Attribute> attributes, PrimaryKey pKey) {
 		this.name = name;
-		this.attrs = new TreeMap<String, Attribute>();
+		this.attributes = new TreeMap<String, Attribute>();
 		for (Map.Entry<String, Attribute> entry : attributes.entrySet()) {
-			this.attrs.put(entry.getKey(), entry.getValue()) ;
+			this.attributes.put(entry.getKey(), entry.getValue()) ;
 		}
-		this.pKey = pKey;
-		this.fKey = new ForeignKey();
+		this.primaryKey = pKey;
+		this.foreignKey = new ForeignKey();
 		this.updateAttributes();
 	}
 	
 	public Table(String n, TreeMap<String, Attribute> a, PrimaryKey p, ForeignKey f) {
 		this.name = n;
-		this.attrs = a;
-		this.pKey = p;
-		this.fKey = f;
+		this.attributes = a;
+		this.primaryKey = p;
+		this.foreignKey = f;
 		this.updateAttributes();
 	}
 	
 	public void addAttribute(Attribute attribute) {
-		this.attrs.put(attribute.getName(), attribute);
+		this.attributes.put(attribute.getName(), attribute);
 		attribute.setTable(this);
 		if (attribute.isKey()) {
 			addAttrToPrimeKey(attribute);
@@ -61,7 +61,7 @@ public class Table implements SqlItem{
 	
 	public void addAttrToPrimeKey(Attribute attribute) {
 		attribute.setToKey();
-		this.pKey.add(attribute);
+		this.primaryKey.add(attribute);
 	}
 	
 	public String getName() {
@@ -69,19 +69,19 @@ public class Table implements SqlItem{
 	}
 	
 	public int getSize() {
-		return attrs.size();
+		return attributes.size();
 	}
 	
 	public TreeMap<String, Attribute> getAttrs() {
-		return this.attrs;
+		return this.attributes;
 	}
 	
 	public PrimaryKey getPrimaryKey() {
-		return this.pKey;
+		return this.primaryKey;
 	}
 	
 	public ForeignKey getForeignKey() {
-		return this.fKey;
+		return this.foreignKey;
 	}
 	
 	@Override
@@ -103,11 +103,11 @@ public class Table implements SqlItem{
 	public String print() {
 		String buff = new String();
 		buff = "Table: " + this.name + "\n";
-		for (Map.Entry<String, Attribute> entry : this.attrs.entrySet()) {
+		for (Map.Entry<String, Attribute> entry : this.attributes.entrySet()) {
 			Attribute a = entry.getValue();
 			buff += "    " + a.print();
-			if (fKey.containsKey(entry.getValue())) {
-				Attribute at = fKey.getRef(entry.getValue());
+			if (foreignKey.containsKey(entry.getValue())) {
+				Attribute at = foreignKey.getRef(entry.getValue());
 				buff += " -> " + at.getTable().getName() + "." + at.getName();
 			}
 			buff += "\n";
@@ -117,8 +117,8 @@ public class Table implements SqlItem{
 	
 	public Attribute getAttrAt(int i) {
 		int c = 0;
-		if (i >= 0 && i < attrs.size()){
-			for (Map.Entry<String, Attribute> t : attrs.entrySet()) {
+		if (i >= 0 && i < attributes.size()){
+			for (Map.Entry<String, Attribute> t : attributes.entrySet()) {
 				if (c == i) {
 					return t.getValue();
 				}
@@ -129,7 +129,7 @@ public class Table implements SqlItem{
 	}
 
 	private void updateAttributes() {
-		for (Map.Entry<String, Attribute> entry : attrs.entrySet()) {
+		for (Map.Entry<String, Attribute> entry : attributes.entrySet()) {
 			entry.getValue().setTable(this);
 		}
 	}

@@ -1,4 +1,4 @@
-package gr.uoi.cs.daintiness.hecate.graph.tree;
+package gr.uoi.cs.daintiness.hecate.gui.swing.graph.tree;
 
 import gr.uoi.cs.daintiness.hecate.Hecate;
 import gr.uoi.cs.daintiness.hecate.sql.Attribute;

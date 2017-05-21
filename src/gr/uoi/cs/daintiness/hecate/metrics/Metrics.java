@@ -54,7 +54,7 @@ public class Metrics {
 		revisions = 0;
 	}
 	
-	public void newRevision() {
+	public void addNewRevision() {
 		revisions++;
 	}
 
@@ -131,15 +131,15 @@ public class Metrics {
 	}
 
 	public String[] getVersionNames() {
-		String[] ret = {oldVersion, newVersion};
-		return ret;
+		String[] names = {oldVersion, newVersion};
+		return names;
 	}
 
 	public int getNumRevisions() {
 		return revisions;
 	}
 
-	public void sanityCheck() {
+	public void computeSanityCheck() {
 		int insertionsCounter = tableIns + attributeIns + attributeTabIns;
 		assert insertions == insertionsCounter: "Insertions misculculated";
 		int deletionsCounter = tableDel + attributeDel + attributeTabDel;

@@ -41,8 +41,8 @@ public class ForeignKey {
 		return references;
 	}
 
-	public boolean isEqual(ForeignKey fk) {
-		if (this.references.size() == fk.references.size()) {
+	public boolean isEqual(ForeignKey foreignKey) {
+		if (this.references.size() == foreignKey.references.size()) {
 			// TODO check if keys are equal
 			return false;
 		} else {

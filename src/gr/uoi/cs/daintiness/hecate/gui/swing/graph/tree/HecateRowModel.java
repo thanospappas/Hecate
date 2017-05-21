@@ -1,4 +1,4 @@
-package gr.uoi.cs.daintiness.hecate.graph.tree;
+package gr.uoi.cs.daintiness.hecate.gui.swing.graph.tree;
 
 import gr.uoi.cs.daintiness.hecate.sql.Attribute;
 import gr.uoi.cs.daintiness.hecate.sql.Table;
@@ -58,7 +58,7 @@ public class HecateRowModel implements RowModel{
 	}
 
 	@Override
-	public boolean isCellEditable(Object arg0, int arg1) {
+	public boolean isCellEditable(Object argument0, int argument1) {
 		return false;
 	}
 

@@ -143,9 +143,9 @@ public class MainWindow extends JFrame{
 				openFolderDialog.setVisible(true);
 				if (openFolderDialog.getStatus() != 0) {
 					String path = openFolderDialog.getFolder();
-					File dir = new File(path);
+					File directory = new File(path);
 					try {
-						task = new DiffWorker(mainPanel, dir);
+						task = new DiffWorker(mainPanel, directory);
 						task.execute();
 						
 					} catch (Exception e) {

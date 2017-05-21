@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class-diagram version="1.1.8" icons="true" always-add-relationships="true" generalizations="true" realizations="true" 
+  associations="true" dependencies="true" nesting-relationships="true">  
+  <package id="1" language="java" name="gr.uoi.cs.daintiness.hecate.gui.swing" project="Hecate" 
+    file="/Hecate/src/gr/uoi/cs/daintiness/hecate/gui/swing" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="50" width="233" x="490" y="35"/>    
+    <display autosize="true" stereotype="true" sort-features="false" accessors="true"/>  
+  </package>  
+  <package id="2" language="java" name="gr.uoi.cs.daintiness.hecate.hecatemanager" project="Hecate" 
+    file="/Hecate/src/gr/uoi/cs/daintiness/hecate/hecatemanager" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="607" y="173"/>    
+    <display autosize="true" stereotype="true" sort-features="false" accessors="true"/>  
+  </package>  
+  <package id="3" language="java" name="gr.uoi.cs.daintiness.hecate.sql" project="Hecate" 
+    file="/Hecate/src/gr/uoi/cs/daintiness/hecate/sql" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="602" y="610"/>    
+    <display autosize="true" stereotype="true" sort-features="false" accessors="true"/>  
+  </package>  
+  <package id="4" language="java" name="gr.uoi.cs.daintiness.hecate.transitions" project="Hecate" 
+    file="/Hecate/src/gr/uoi/cs/daintiness/hecate/transitions" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="475" y="428"/>    
+    <display autosize="true" stereotype="true" sort-features="false" accessors="true"/>  
+  </package>  
+  <package id="5" language="java" name="gr.uoi.cs.daintiness.hecate.metrics" project="Hecate" 
+    file="/Hecate/src/gr/uoi/cs/daintiness/hecate/metrics" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="808" y="297"/>    
+    <display autosize="true" stereotype="true" sort-features="false" accessors="true"/>  
+  </package>  
+  <package id="6" language="java" name="gr.uoi.cs.daintiness.hecate.output" project="Hecate" 
+    file="/Hecate/src/gr/uoi/cs/daintiness/hecate/output" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="351" y="286"/>    
+    <display autosize="true" stereotype="true" sort-features="false" accessors="true"/>  
+  </package>  
+  <package id="7" language="java" name="gr.uoi.cs.daintiness.hecate.parser" project="Hecate" 
+    file="/Hecate/src/gr/uoi/cs/daintiness/hecate/parser" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="743" y="440"/>    
+    <display autosize="true" stereotype="true" sort-features="false" accessors="true"/>  
+  </package>  
+  <dependency id="8">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="5"/>  
+  </dependency>  
+  <dependency id="9">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="7"/>  
+  </dependency>  
+  <dependency id="10">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="6"/>  
+  </dependency>  
+  <dependency id="11">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="2"/>  
+  </dependency>  
+  <dependency id="12">    
+    <bendpoint x="753" y="102"/>    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="5"/>  
+  </dependency>  
+  <dependency id="13">    
+    <end type="SOURCE" refId="6"/>    
+    <end type="TARGET" refId="4"/>  
+  </dependency>  
+  <dependency id="14">    
+    <end type="SOURCE" refId="7"/>    
+    <end type="TARGET" refId="3"/>  
+  </dependency>  
+  <dependency id="15">    
+    <bendpoint x="925" y="67"/>    
+    <bendpoint x="929" y="501"/>    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="3"/>  
+  </dependency>  
+  <dependency id="16">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="4"/>  
+  </dependency>  
+  <dependency id="17">    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="3"/>  
+  </dependency>  
+  <dependency id="18">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="3"/>  
+  </dependency>  
+  <dependency id="19">    
+    <bendpoint x="349" y="613"/>    
+    <end type="SOURCE" refId="6"/>    
+    <end type="TARGET" refId="3"/>  
+  </dependency>  
+  <classifier-display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" 
+    sort-features="false" accessors="true" visibility="true">    
+    <attributes public="true" package="true" protected="true" private="true" static="true"/>    
+    <operations public="true" package="true" protected="true" private="true" static="true"/>  
+  </classifier-display>  
+  <association-display labels="true" multiplicity="true"/>
+</class-diagram>

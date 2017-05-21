@@ -2,7 +2,7 @@ package gr.uoi.cs.daintiness.hecate.sql;
 
 public interface SqlItem {
 	
-	public static int MACHED = 1;
+	public static int MATCHED = 1;
 	public static int INSERTED = 2;
 	public static int DELETED = 3;
 	public static int UPDATED = 4;
