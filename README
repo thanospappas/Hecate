@@ -1,7 +1,6 @@
 # API REFERENCE
 
- The HecateAPI implements the 3 basic use-cases
- of the system.
+ The HecateAPI implements the 3 basic use-cases of the system.
 
 ### public Schema parse(String path);
 	
